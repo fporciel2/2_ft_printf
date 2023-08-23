@@ -57,7 +57,7 @@ static char	**split_free_null(char ***phrase, size_t count)
 	return (*phrase);
 }
 
-static size_t	split_count(char *str, char delim, int param, size_t *start)
+static size_t	split_count(char const *str, char delim, int param, size_t *start)
 {
 	size_t	words;
 	ssize_t	letters;
@@ -84,7 +84,7 @@ static size_t	split_count(char *str, char delim, int param, size_t *start)
 	return (letters);
 }
 
-static char	*split_copy_word(char *word, char *str, char delim, size_t *start)
+static char	*split_copy_word(char *word, char const *str, char delim, size_t *start)
 {
 	size_t	letters;
 	size_t	start_word;
