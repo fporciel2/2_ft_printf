@@ -105,7 +105,7 @@ static char	*split_copy_word(char *word, char *str, char delim, size_t *start)
 	return (word);
 }
 
-char	**ft_split(char *str, char delim)
+char	**ft_split(char const *str, char delim)
 {
 	size_t	count;
 	size_t	count_words;
