@@ -34,19 +34,29 @@
 .PHONY: all clean fclean re
 .DEFAULT_GOAL := $(NAME)
 NAME := libftprintf.a
-SRCS := $(wildcard ft_*.c) $(wildcard **/ft_*.c)
-HEADERS := $(wildcard *.h) $(wildcard **/*.h)
+LIBFTDIR := $(shell pwd)/libft
+LIBFT := $(LIBFTDIR)/libft.a
+SRCS := $(wildcard ft_*.c)
+HEADERS := $(wildcard *.h)
 OBJS := $(patsubst %.c, %.o, $(notdir $(SRCS)))
 CC := gcc
 CFLAGS := -Wall -Wextra -Werror -c
 
-$(NAME): $(OBJS) $(HEADERS)
+$(NAME): $(LIBFT) $(OBJS) $(HEADERS)
 	ar rcs $@ $^
 
 all: $(NAME)
 
 $(OBJS): $(SRCS) $(HEADERS)
 	$(CC) $(CFLAGS) $^
+
+$(LIBFT):
+	if [ -e $(LIBFTDIR) ]; \
+		then echo "Libft directory detected"; \
+		else git clone git@github.com:fporciel2/1_libft.git; fi
+	if [ -e $(LIBFT) ]; \
+		then echo "Libft detected"; \
+		else cd libft && make && cd ..; fi
 
 clean:
 	rm -f $(OBJS)
