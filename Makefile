@@ -3,15 +3,18 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fporciel <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: fporciel <fporciel@student.42roma.it>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/03/06 13:39:47 by fporciel          #+#    #+#              #
-#    Updated: 2023/03/07 11:01:29 by fporciel         ###   ########.fr        #
+#    Created: 2023/08/30 17:00:25 by fporciel          #+#    #+#              #
+#    Updated: 2023/08/31 17:38:04 by fporciel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-# 
-# This software is made available to anyone who wants to retrace the 
-# author's learning path through the projects of school 42.
+# This is a personal, generic implementation of the standard C function
+# 'printf', made for the sole purpose of learning the mechanics of this classic
+# C programming tool. The result does not conform, at the time of production, 
+# to any standard. Compared to the standard function, some features are missing.
+# In some cases, attempts have been made to resolve behaviors that are undefined
+# in the standard.
 # Copyright (C) 2023  fporciel
 # 
 # This program is free software: you can redistribute it and/or modify
@@ -31,38 +34,61 @@
 #- fporciel@student.42roma.it
 #
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus download_libft
 .DEFAULT_GOAL := $(NAME)
 NAME := libftprintf.a
-LIBFTDIR := $(shell pwd)/libft
-LIBFT := $(LIBFTDIR)/libft.a
-SRCS := $(wildcard ft_*.c)
-HEADERS := $(wildcard *.h)
-OBJS := $(patsubst %.c, %.o, $(notdir $(SRCS)))
+FT_PRINTF_DIR := $(shell pwd)
+FT_DIR := $(FT_PRINTF_DIR)/1_libft
+FT_LIB := $(FT_LIB)/libft.a
+HEADERS_DIRS := $(FT_PRINTF_DIR) $(FT_DIR)
+HEADERS := $(filter-out %bonus.h, $(wildcard ft_*.h))
+BONUS_HEADERS := $(wildcard ft_*bonus.h)
+SOURCE_FILES := $(filter-out %bonus.c, $(wildcard ft_*.c))
+BONUS_SOURCE_FILES := $(wildcard ft_*bonus.c)
+OBJECT_FILES := $(patsubst %c, %.o, $(SOURCE_FILES))
+BONUS_OBJECT_FILES := $(patsubst %.c, %.o, $(BONUS_SOURCE_FILES))
 CC := gcc
-CFLAGS := -Wall -Wextra -Werror -c
+INCLUDE := $(addprefix -I, $(HEADERS_DIRS))
+COMPILER_FLAGS := -Wall -Wextra -Werror -O1 -Os -g -fsanitize=address \
+	$(INCLUDE) -c
 
-$(NAME): $(LIBFT) $(OBJS) $(HEADERS)
-	ar rcs $@ $^
+$(NAME): $(FT_LIB) $(OBJECT_FILES)
+	ar rcs $(NAME) $(FT_LIB) $(OBJECT_FILES)
+	make clean
 
 all: $(NAME)
 
-$(OBJS): $(SRCS) $(HEADERS)
-	$(CC) $(CFLAGS) $^
+bonus: $(NAME) $(BONUS_OBJECT_FILES)
+	ar rcs $(NAME) $(BONUS_OBJECT_FILES)
+	make clean
 
-$(LIBFT):
-	if [ -e $(LIBFTDIR) ]; \
-		then echo "Libft directory detected"; \
-		else git clone git@github.com:fporciel2/1_libft.git; fi
-	if [ -e $(LIBFT) ]; \
-		then echo "Libft detected"; \
-		else cd libft && make && cd ..; fi
+$(OBJECT_FILES): $(SOURCE_FILES) $(HEADERS)
+	$(CC) $(COMPILER_FLAGS) $(SOURCE_FILES) $(HEADERS)
+	rm -f $(HEADERS).gch
+
+$(BONUS_OBJECT_FILES): $(BONUS_SOURCE_FILES) $(BONUS_HEADERS)
+	$(CC) $(COMPILER_FLAGS) $(BONUS_SOURCE_FILES) $(BONUS_HEADERS)
+	rm -f $(BONUS_HEADERS).gch
+
+$(FT_LIB): $(FT_DIR)
+	cd $(FT_DIR) && make bonus && cd ..; fi
+
+$(FT_DIR):
+	if [ ! -e $(FT_DIR) ]; \
+		if [ -e ../1_libft ]; \
+		then ln -s ../1_libft $(FT_DIR); \
+		else make download_libft; fi; fi
+
+download_libft:
+	git clone git@github.com:fporciel2/1_libft.git
 
 clean:
-	rm -f $(OBJS)
+	rm -f *.o
+	cd $(FT_DIR) && make clean && cd ..
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f *.a
+	cd $(FT_DIR) && make fclean && cd ..
 
-re: fclean all
+re: clean fclean
 
