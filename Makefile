@@ -6,7 +6,7 @@
 #    By: fporciel <fporciel@student.42roma.it>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/30 17:00:25 by fporciel          #+#    #+#              #
-#    Updated: 2023/08/31 17:38:04 by fporciel         ###   ########.fr        #
+#    Updated: 2023/09/02 12:11:29 by fporciel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 # This is a personal, generic implementation of the standard C function
@@ -15,6 +15,9 @@
 # to any standard. Compared to the standard function, some features are missing.
 # In some cases, attempts have been made to resolve behaviors that are undefined
 # in the standard.
+# `printf` stands for "Print Formatted Information". It is a standard library
+# function in C and other programming languages that allows you to format and 
+# print data to the screen or a file in a structured format.  
 # Copyright (C) 2023  fporciel
 # 
 # This program is free software: you can redistribute it and/or modify
