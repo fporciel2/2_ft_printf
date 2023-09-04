@@ -1,16 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fporciel <fporciel@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/31 17:57:10 by fporciel          #+#    #+#             */
-/*   Updated: 2023/09/04 19:55:22 by fporciel         ###   ########.fr       */
+/*   Created: 2023/09/04 19:50:15 by fporciel          #+#    #+#             */
+/*   Updated: 2023/09/04 20:34:27 by fporciel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /* 
-* Header file for function ft_printf.
+* This is the ft_printf function. It takes a formatted string followed by
+* variadic arguments, it prints on screen the formatted string. The variadic
+* arguments are used to pass to the function the values corresponding to the
+* format specifiers.
 * Copyright (C) 2023  fporciel
 * 
 * This program is free software: you can redistribute it and/or modify
@@ -30,11 +33,28 @@
 *- fporciel@student.42roma.it
 */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
-# include <stdarg.h>
-# include "./1_libft/libft.h"
+#include "ft_printf.h"
 
-int	ft_printf(const char *format, ...);
+int ft_printf(const char *format, ...)
+{
+    va_list     args;
+    const char  *index = format;
+    int         output;
+    int         swap;
 
-#endif
+    output = 0;
+    while (*index && (*index != 37))
+        index++;
+    if (*index == 37)
+    {
+        output = (int)write(1, format, (size_t)(index - format));
+        if (output < 0)
+            return (output);
+        va_start(args, format);
+        output = ft_calculate_output(args, &index);
+        va_end(args);
+    }
+    else
+        return ((int)write(1, format, (size_t)(index - format)));
+    return (output);
+}
