@@ -6,7 +6,7 @@
 /*   By: fporciel <fporciel@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 19:50:15 by fporciel          #+#    #+#             */
-/*   Updated: 2023/09/09 12:34:06 by fporciel         ###   ########.fr       */
+/*   Updated: 2023/09/09 12:56:50 by fporciel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /* 
@@ -35,6 +35,15 @@
 
 #include "ft_printf.h"
 
+static int  ft_handle_spec(const char *s, const char *s1, va_list ap, int num)
+{
+    (void)format;
+    (void)index;
+    (void)args;
+    (void)result;
+    return (0);
+}
+
 int ft_printf(const char *format, ...)
 {
     va_list     args;
@@ -54,8 +63,8 @@ int ft_printf(const char *format, ...)
         if (result < 0)
             return (result);
     }
-    va_arg(args, format);
-    result = ft_printf_handle_percent(format, index, args, result);
+    va_start(args, format);
+    result = ft_handle_spec(format, index, args, result);
     va_end(args);
     return (result);
 }

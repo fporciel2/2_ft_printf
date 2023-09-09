@@ -6,7 +6,7 @@
 #    By: fporciel <fporciel@student.42roma.it>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/30 17:00:25 by fporciel          #+#    #+#              #
-#    Updated: 2023/09/02 12:11:29 by fporciel         ###   ########.fr        #
+#    Updated: 2023/09/09 12:41:33 by fporciel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 # This is a personal, generic implementation of the standard C function
@@ -74,11 +74,11 @@ $(BONUS_OBJECT_FILES): $(BONUS_SOURCE_FILES) $(BONUS_HEADERS)
 	rm -f $(BONUS_HEADERS).gch
 
 $(FT_LIB): $(FT_DIR)
-	cd $(FT_DIR) && make bonus && cd ..; fi
+	cd $(FT_DIR) && make bonus && cd ..
 
 $(FT_DIR):
 	if [ ! -e $(FT_DIR) ]; \
-		if [ -e ../1_libft ]; \
+		then if [ -e ../1_libft ]; \
 		then ln -s ../1_libft $(FT_DIR); \
 		else make download_libft; fi; fi
 
