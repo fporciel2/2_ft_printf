@@ -6,7 +6,7 @@
 /*   By: fporciel <fporciel@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 19:50:15 by fporciel          #+#    #+#             */
-/*   Updated: 2023/09/05 06:03:42 by fporciel         ###   ########.fr       */
+/*   Updated: 2023/09/09 12:34:06 by fporciel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /* 
@@ -35,46 +35,27 @@
 
 #include "ft_printf.h"
 
-static int ft_calculate_output(va_list args, char **index)
-{
-    const char  *start = *index;
-
-    while (**index)
-    {
-        if (ft_is_format_specifier(*index))
-            output = ft_print_specified_argument(&start, index, args, output);
-        else if (*((*index) + 1) == 37)
-            output = ft_print_percent_symbol(&start, index, output);
-        else
-        {
-            *index++;
-            start++;
-            while (**index && (**index != 37))
-                (*index)++;
-        }
-    }
-}
-
 int ft_printf(const char *format, ...)
 {
     va_list     args;
     const char  *index = format;
-    int         output;
+    int         result;
 
-    output = 0;
+    if (format == NULL)
+        return (-1);
     while (*index && (*index != 37))
         index++;
-    if (*index == 37)
-    {
-        if ((index - format) > 0)
-            output = (int)write(1, format, (size_t)(index - format));
-        if (output < 0)
-            return (output);
-        va_start(args, format);
-        output = ft_calculate_output(args, &index, output);
-        va_end(args);
-    }
-    else
+    result = 0;
+    if (!(*index))
         return ((int)write(1, format, (size_t)(index - format)));
-    return (output);
+    if (index - format)
+    {
+        result = (int)write(1, format, (size_t)(index - format));
+        if (result < 0)
+            return (result);
+    }
+    va_arg(args, format);
+    result = ft_printf_handle_percent(format, index, args, result);
+    va_end(args);
+    return (result);
 }
