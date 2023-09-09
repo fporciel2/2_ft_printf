@@ -6,7 +6,7 @@
 /*   By: fporciel <fporciel@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 19:50:15 by fporciel          #+#    #+#             */
-/*   Updated: 2023/09/09 12:56:50 by fporciel         ###   ########.fr       */
+/*   Updated: 2023/09/09 16:51:33 by fporciel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /* 
@@ -35,13 +35,68 @@
 
 #include "ft_printf.h"
 
+static int  ft_endprint(const char *s, const char *s1, int num)
+{
+    int swap_num;
+
+    if (s1 - s)
+        swap_num = (int)write(1, s, (size_t)(s1 - s));
+    if (swap_num < 0)
+        return (-1);
+    num += swap_num;
+    return (num);
+}
+
+static int  ft_slideformat(char **s1)
+{
+    while (**s1 && (**s1 != 37))
+        (*s1)++;
+    if (**s1 == 0)
+        return (1);
+    else
+        return (0);
+}
+
+static void ft_handlepercent(char **s, char **s1, int *swap_num)
+{
+    if (*(*s1 + 1) == 37)
+    {
+        *swap_num = (int)write(1, (*s1 + 1), 1);
+        *s1 += 2;
+        *s = *s1;
+    }
+    else
+    {
+        *swap_num = 0;
+        (*s1)++;
+        *s = *s1;
+    }
+}
+
 static int  ft_handle_spec(const char *s, const char *s1, va_list ap, int num)
 {
-    (void)format;
-    (void)index;
-    (void)args;
-    (void)result;
-    return (0);
+    int swap_num;
+
+    while (*s1)
+    {
+        swap_num = 0;
+        if (s1 - s)
+            swap_num = (int)write(1, s, (size_t)(s1 - s));
+        if (swap_num < 0)
+            return (-1);
+        num += swap_num;
+        swap_num = ft_isfspec(s1 + 1);
+        if (swap_num == -1)
+            ft_handlepercent(&s, &s1, &swap_num);
+        else
+            swap_num = ft_printarg(&s, &s1, swap_num, ap);
+        if (swap_num < 0)
+            return (-1);
+        num += swap_num;
+        if (ft_slideformat(&s1))
+            break ;
+    }
+    return (ft_endprintf(s, s1, num));
 }
 
 int ft_printf(const char *format, ...)
@@ -57,12 +112,6 @@ int ft_printf(const char *format, ...)
     result = 0;
     if (!(*index))
         return ((int)write(1, format, (size_t)(index - format)));
-    if (index - format)
-    {
-        result = (int)write(1, format, (size_t)(index - format));
-        if (result < 0)
-            return (result);
-    }
     va_start(args, format);
     result = ft_handle_spec(format, index, args, result);
     va_end(args);
