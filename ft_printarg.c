@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_printarg.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fporciel <fporciel@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/31 17:57:10 by fporciel          #+#    #+#             */
-/*   Updated: 2023/09/11 16:47:12 by fporciel         ###   ########.fr       */
+/*   Created: 2023/09/11 16:47:28 by fporciel          #+#    #+#             */
+/*   Updated: 2023/09/11 17:34:16 by fporciel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /* 
-* Header file for function ft_printf.
+* This function is meant to print the variadic arguments in the right order.
 * Copyright (C) 2023  fporciel
 * 
 * This program is free software: you can redistribute it and/or modify
@@ -30,13 +30,32 @@
 *- fporciel@student.42roma.it
 */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
-# include <stdarg.h>
-# include "./1_libft/libft.h"
+#include "ft_printf.h"
 
-int	ft_printf(const char *format, ...);
-int	ft_isfspec(const char *index);
-int	ft_printarg(char **s, char **s1, int num, va_list *ap); 
+static int  ft_printstr(char *str)
+{
+    if (str)
+        return ((int)write(1, str, ft_strlen(str)));
+    else
+        return (-1);
+}
 
-#endif
+int ft_printarg(char **s, char **s1, int num, va_list *ap)
+{
+    *s1 += 2;
+    *s = *s1;
+    if (*(s1 - 1) == 99)
+        return ((int)write(1, va_arg(*ap, char), 1));
+    else if (*(s1 - 1) == 115)
+        return (ft_printstr(va_arg(*ap, char *)));
+    else if (*(s1 - 1) == 112)
+        return (ft_printstr(ft_voidtoa(va_arg(*ap, void *))));
+    else if ((*(s1 - 1) == 100) || (*(s1 - 1) == 105))
+        return (ft_printstr(ft_itoa(va_arg(*ap, int))));
+    else if (*(s1 - 1) == 117)
+        return (ft_printstr(ft_uitoa(va_arg(*ap, unsigned int))));
+    else if (*(s1 - 1) == 120)
+        return (ft_printstr(ft_hextoa(va_arg(*ap, unsigned int))));
+    else if (*(s1 - 1) == 88)
+        return (ft_printstr(ft_capitalhextoa(*ap, unsigned int)));
+}

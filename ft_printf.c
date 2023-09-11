@@ -6,7 +6,7 @@
 /*   By: fporciel <fporciel@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/04 19:50:15 by fporciel          #+#    #+#             */
-/*   Updated: 2023/09/09 16:51:33 by fporciel         ###   ########.fr       */
+/*   Updated: 2023/09/11 16:45:24 by fporciel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 /* 
@@ -89,7 +89,7 @@ static int  ft_handle_spec(const char *s, const char *s1, va_list ap, int num)
         if (swap_num == -1)
             ft_handlepercent(&s, &s1, &swap_num);
         else
-            swap_num = ft_printarg(&s, &s1, swap_num, ap);
+            swap_num = ft_printarg(&s, &s1, swap_num, &ap);
         if (swap_num < 0)
             return (-1);
         num += swap_num;
